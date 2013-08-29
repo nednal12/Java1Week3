@@ -4,5 +4,7 @@
     <string name="app_name">NetworkConnectivity</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="enter_your_zip_code">Enter Your Zip Code</string>
+    <string name="go">GO</string>
 
 </resources>

@@ -19,41 +19,45 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
 	Context _context;
-	LinearLayout _appLayout;
+	
 	SearchForm _search;
-	DealDisplay _deal;
+	
 	FavDisplay _favorites;
 	Boolean _connected = false;
 	HashMap<String, String> _history;
 	
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		setContentView(R.layout.form);
 		_context = this;
-		_appLayout = new LinearLayout(this);
+		
 		_history = new HashMap<String, String>();
 		
-		_search = new SearchForm(_context, "Enter Your Zip Code", "Search");
+		
 		
 		
 		// Add search handler
-		
-		Button searchButton = _search.getButton();
-		
+		Button searchButton = (Button) findViewById(R.id.searchButton);
 		searchButton.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
-				Log.i("Click Handler", _search.getField().getText().toString());
-				getDeal(_search.getField().getText().toString());
+				EditText field = (EditText) findViewById(R.id.searchField);
+				String zip = field.getText().toString().toUpperCase();
+				field.setText(zip);
+				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(field.getWindowToken(), 0);
+				getDeal(zip);
 			}
 		});
 		
@@ -64,21 +68,8 @@ public class MainActivity extends Activity {
 		}
 		
 		
-		// Add deal display
-		_deal = new DealDisplay(_context);
-		
 		// Add favorites display
 		_favorites = new FavDisplay(_context);
-		
-		// Add views to main layout
-		_appLayout.addView(_search);
-		_appLayout.addView(_deal);
-		_appLayout.addView(_favorites);
-		
-		_appLayout.setOrientation(LinearLayout.VERTICAL);
-		
-		setContentView(_appLayout);
-		
 		
 	}
 
@@ -140,17 +131,15 @@ public class MainActivity extends Activity {
 				FileStuff.storeObjectFile(_context, "history", _history, false);
 				FileStuff.storeStringFile(_context, "temp", jo.toString(), true);
 				
-				_deal._name.setText(jo.getString("name"));
-				_deal._dealSource.setText(jo.getString("dealSource"));
-				_deal._address.setText(jo.getString("address"));
-				_deal._address2.setText(jo.getString("address2"));
-				_deal._city.setText(jo.getString("city"));
-				_deal._state.setText(jo.getString("state"));
-				_deal._ZIP.setText(jo.getString("ZIP"));
-				_deal._dealTitle.setText(jo.getString("dealTitle"));
-				_deal._dealinfo.setText(jo.getString("dealinfo"));
-				_deal._postDate.setText(jo.getString("postDate"));
-				_deal._expirationDate.setText(jo.getString("expirationDate"));
+				
+				((TextView) findViewById(R.id.data_name)).setText(jo.getString("name"));
+				((TextView) findViewById(R.id.data_source)).setText(jo.getString("dealSource"));
+				((TextView) findViewById(R.id.data_address)).setText(jo.getString("address"));
+				((TextView) findViewById(R.id.data_city)).setText(jo.getString("city"));
+				((TextView) findViewById(R.id.data_state)).setText(jo.getString("state"));
+				((TextView) findViewById(R.id.data_zip)).setText(jo.getString("ZIP"));
+				((TextView) findViewById(R.id.data_title)).setText(jo.getString("dealTitle"));
+				
 				
 			} catch (JSONException e){
 				Log.e("JSON","My JSON Object Exception");
